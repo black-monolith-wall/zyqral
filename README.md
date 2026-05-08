@@ -4,20 +4,16 @@ Zyqral Agentic control-plane scaffold.
 
 ## Components
 
-- Cloudflare Worker dispatcher + control API: `src/worker.js`
+- Cloudflare Worker dispatcher: `src/worker.js`
 - Delegation manifest (GitHub Pages): `docs/delegation-manifest.json`
-- Public front page: `docs/index.html`
-- Operator control console: `docs/zyqral-control.html`
+- GitHub Pages control index: `docs/index.html`
 
-## Worker Environment Variables / Bindings
+## Worker Environment Variables
 
 - `TASK_MANIFEST_URL`: URL to delegation manifest JSON served via GitHub Pages.
 - `PROVIDER_SECRETS_JSON`: JSON object keyed by provider id for bearer tokens/API keys.
-- `CONTROL_SECRET`: shared secret required for `/control/*` operations.
-- `CONTROL_KV`: KV binding for control/config data.
-- `CONTROL_DB`: D1 binding for query/update operations.
 
-Example `PROVIDER_SECRETS_JSON`:
+Example:
 
 ```json
 {"google-free-tier":"YOUR_API_KEY"}
