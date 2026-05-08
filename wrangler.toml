@@ -1,0 +1,4 @@
+name = "zyqral"
+main = "src/worker.js"
+compatibility_date = "2026-05-08"
+workers_dev = true
