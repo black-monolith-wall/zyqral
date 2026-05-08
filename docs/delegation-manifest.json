@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "task": {
+    "objective": "Implement small reversible improvements and return a tested patch.",
+    "constraints": [
+      "Do not modify soul.md protected constraint text.",
+      "Prefer additive changes with rollback path.",
+      "Include test or check commands run."
+    ],
+    "acceptance_tests": [
+      "Project builds/runs in current environment.",
+      "Changes are explained with file-level citations.",
+      "Patch is narrowly scoped and reversible."
+    ],
+    "deliverables": [
+      "Unified diff",
+      "Command log",
+      "Risk notes"
+    ]
+  },
+  "providers": [
+    {
+      "id": "google-free-tier",
+      "label": "Google API (free tier)",
+      "priority": 100,
+      "probe_url": "https://generativelanguage.googleapis.com/v1beta/models"
+    },
+    {
+      "id": "backup-provider",
+      "label": "Backup Provider",
+      "priority": 50,
+      "probe_url": "https://httpbin.org/status/200"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zyqral Control Plane</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 2rem; max-width: 860px; }
+      code, pre { background: #f5f5f5; padding: 0.2rem 0.4rem; }
+      .card { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Zyqral Control Plane</h1>
+    <p>This page hosts delegation instructions for the Cloudflare Worker dispatcher.</p>
+
+    <div class="card">
+      <h2>Manifest URL</h2>
+      <p>Use this file as <code>TASK_MANIFEST_URL</code> in Worker environment settings.</p>
+      <p><a href="./delegation-manifest.json">delegation-manifest.json</a></p>
+    </div>
+
+    <div class="card">
+      <h2>Worker Endpoints</h2>
+      <ul>
+        <li><code>/health</code> - health check</li>
+        <li><code>/manifest</code> - fetch + return current manifest</li>
+        <li><code>/dispatch</code> - probe providers, detect rate limits, return delegation packet</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Quick Start</h2>
+      <pre>wrangler secret put PROVIDER_SECRETS_JSON
+# example JSON: {"google-free-tier":"YOUR_API_KEY"}</pre>
+      <pre>wrangler deploy</pre>
+    </div>
+  </body>
+</html>
