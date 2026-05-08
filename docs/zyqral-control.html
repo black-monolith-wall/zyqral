@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zyqral Control Console</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 1.2rem; max-width: 960px; }
+      input, textarea, button { width: 100%; margin: 0.35rem 0; padding: 0.55rem; }
+      .card { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+      pre { background: #f5f5f5; padding: 0.7rem; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <h1>Zyqral Control Console</h1>
+    <p>Use a Cloudflare Worker control secret to authenticate and edit KV/D1-backed state.</p>
+
+    <label>Worker Base URL</label>
+    <input id="baseUrl" placeholder="https://your-worker.workers.dev" />
+
+    <label>Control Secret</label>
+    <input id="secret" type="password" placeholder="CONTROL_SECRET" />
+
+    <button onclick="authCheck()">Authenticate</button>
+    <pre id="authOut"></pre>
+
+    <div class="row">
+      <div class="card">
+        <h2>KV Get</h2>
+        <input id="kvGetKey" placeholder="key" />
+        <button onclick="kvGet()">Fetch KV</button>
+      </div>
+      <div class="card">
+        <h2>KV Put</h2>
+        <input id="kvPutKey" placeholder="key" />
+        <textarea id="kvPutValue" rows="6" placeholder='value (string or JSON)'></textarea>
+        <button onclick="kvPut()">Write KV</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>D1 Query</h2>
+      <textarea id="sql" rows="4" placeholder="SELECT * FROM your_table LIMIT 5;"></textarea>
+      <textarea id="params" rows="3" placeholder='JSON params array, e.g. ["id-1"]'></textarea>
+      <button onclick="d1Query()">Run Query</button>
+    </div>
+
+    <h2>Response</h2>
+    <pre id="out"></pre>
+
+    <script>
+      function getConfig() {
+        return {
+          baseUrl: document.getElementById('baseUrl').value.replace(/\/$/, ''),
+          secret: document.getElementById('secret').value,
+        };
+      }
+      async function call(path, payload = {}) {
+        const { baseUrl, secret } = getConfig();
+        const res = await fetch(baseUrl + path, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'x-control-secret': secret,
+          },
+          body: JSON.stringify(payload),
+        });
+        return res.json();
+      }
+      async function authCheck() {
+        document.getElementById('authOut').textContent = JSON.stringify(await call('/control/auth'), null, 2);
+      }
+      async function kvGet() {
+        const key = document.getElementById('kvGetKey').value;
+        document.getElementById('out').textContent = JSON.stringify(await call('/control/kv/get', { key }), null, 2);
+      }
+      async function kvPut() {
+        const key = document.getElementById('kvPutKey').value;
+        const raw = document.getElementById('kvPutValue').value;
+        let value = raw;
+        try { value = JSON.parse(raw); } catch {}
+        document.getElementById('out').textContent = JSON.stringify(await call('/control/kv/put', { key, value }), null, 2);
+      }
+      async function d1Query() {
+        const sql = document.getElementById('sql').value;
+        const paramsRaw = document.getElementById('params').value;
+        let params = [];
+        try { params = JSON.parse(paramsRaw || '[]'); } catch {}
+        document.getElementById('out').textContent = JSON.stringify(await call('/control/d1/query', { sql, params }), null, 2);
+      }
+    </script>
+  </body>
+</html>
